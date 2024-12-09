@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote of the day</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quote-box">
+        <h2>Quote of the day</h2>
+        <blockquote id="quote">Loading...</blockquote>
+        <span id="author">Loading...</span>
+
+        <div>
+            <button onclick="getQuote(api_url)">New Quote</button>
+            <button onclick="tweet()"><img src="twitter.png">Tweet</button>
+        </div>
+    </div>
+
+    <script>
+        const quote = document.getElementById("quote")
+        const author = document.getElementById("author")
+        
+        const api_url = "https://api.api-ninjas.com/v1/quotes";
+        const api_key = "7Rhmyql20jEVVEmDI+y25Q==yMw23y5K2BglKTRm"
+
+        async function getQuote(url) {
+            try {
+                const response = await fetch(url, {
+                   method : "GET",
+                   headers : {
+                    "X-Api-Key" : api_key
+                   } 
+                })
+
+                if(!response.ok) {
+                    throw new Error(`HTTP error! Status : ${response.status}`)
+                }
+
+                const data = await response.json();
+                const quoteData = data[0]
+
+                quote.innerHTML = quoteData.quote
+                author.innerHTML = quoteData.author
+            } catch(error) {
+                console.log("Error fetching quote : ", error)
+                quote.innerHTML = "Failed to load quote. Please try again."
+                author.innerHTML = ""
+            }
+        }
+        getQuote(api_url)
+
+        function tweet() {
+            window.open("https://twitter.com/intent/tweet?text=" + quote.innerHTML + "--- by" + author.innerHTML, "Tweet Window", "width=600, height=300")
+        }
+
+    </script>
+</body>
+</html>
